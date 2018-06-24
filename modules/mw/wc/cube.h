@@ -14,11 +14,13 @@ void make_cube(
     int left, int right, int top, int bottom, int front, int back,
     float x, float y, float z, float n, int w);
 
-/*
+
 void make_plant(
-    float *data, float ao, float light,
+	Array* mesh_array,
+    //float *data, float ao, float light,
     float px, float py, float pz, float n, int w, float rotation);
 
+/*
 void make_player(
     float *data,
     float x, float y, float z, float rx, float ry);

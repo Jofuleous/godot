@@ -19,7 +19,6 @@ public:
 	int miny;
 	int maxy;
 	MeshInstance* mesh_instance; // all nodes need to be allocated, apparently.
-	ArrayMesh mesh;
 	//GLuint buffer;
 	//GLuint sign_buffer;
 };

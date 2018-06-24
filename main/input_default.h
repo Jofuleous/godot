@@ -80,6 +80,7 @@ class InputDefault : public Input {
 		float max_ref_frame;
 
 		void update(const Vector2 &p_delta_p);
+		Point2 get_speed() const;
 		void reset();
 		SpeedTrack();
 	};

@@ -6,6 +6,11 @@
 #include "reference.h"
 #include "cmap.h"
 #include "chunk.h"
+#include "core/math/vector3.h"
+
+class Thread;
+class Semaphore;
+class WC;
 
 #define CREATE_CHUNK_RADIUS 10
 #define RENDER_CHUNK_RADIUS 10
@@ -48,14 +53,15 @@ typedef struct {
 	int maxy;
 	int faces;
 	Array mesh_array;
+	Array profile_times;
 } WorkerItem;
 
 typedef struct {
 	int index;
 	int state;
-	//thrd_t thrd;
-	//mtx_t mtx;
-	//cnd_t cnd;
+	WC *wc;
+	Thread *thrd;
+	Semaphore *smphr;
 	WorkerItem item;
 } Worker;
 
@@ -82,6 +88,8 @@ class WC : public Node {
 
 protected:
 	static void _bind_methods();
+	void _notification( int p_what );
+	void update( float time_step );
 	void set_material( const Ref<Material> &p_material );
 	Ref<Material> get_material() const;
 
@@ -90,30 +98,27 @@ public:
 	bool get_created();
 	static bool s_created;
 	WC();
+	~WC();
 
-	void create_world( int p, int q, world_func func, void *arg );
-	void compute_chunk( WorkerItem *item );
 	Chunk *find_chunk( int p, int q );
 	void dirty_chunk( Chunk *chunk );
 	void request_chunk( int p, int q );
-	void load_chunk( WorkerItem *item );
 	void init_chunk( Chunk *chunk, int p, int q );
 	void create_chunk( Chunk *chunk, int p, int q );
-	void generate_chunk( Chunk *chunk, WorkerItem *item );
+	void set_chunk_render_data( Chunk *chunk, WorkerItem *item );
 	void gen_chunk_buffer( Chunk *chunk );
 	int highest_block( float x, float z );
 	void delete_chunks();
 	void delete_all_chunks();
 	void force_chunks( float x, float z );
 	void check_workers();
-	int worker_run( void *arg );
-	void ensure_chunks_worker( float x, float z, Worker *worker );
-	void ensure_chunks( float x, float z );
+	void ensure_chunks_worker( Vector3 position, Vector3 normal, Worker *worker );
+	void ensure_chunks( Vector3 position, Vector3 normal );
 	int get_block( int x, int y, int z );
 
 	Ref<Material> material;
 	Node* world_node;
-	Worker workers[WORKERS];
+	Worker* workers;
 	Chunk chunks[MAX_CHUNKS];
 	int chunk_count;
 	int create_radius;
@@ -147,6 +152,8 @@ public:
 	Block block1;
 	Block copy0;
 	Block copy1;
+	Vector3 camera_position;
+	Vector3 camera_direction;
 };
 
 #endif

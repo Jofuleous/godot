@@ -48,6 +48,7 @@ void InputDefault::SpeedTrack::update(const Vector2 &p_delta_p) {
 	if (accum_t > max_ref_frame * 10)
 		accum_t = max_ref_frame * 10;
 
+	// this is fixing some problem.  i just don't know what...  why not just use distance / time???  bad interp?
 	while (accum_t >= min_ref_frame) {
 
 		float slice_t = min_ref_frame / accum_t;
@@ -59,6 +60,22 @@ void InputDefault::SpeedTrack::update(const Vector2 &p_delta_p) {
 	}
 }
 
+Point2 InputDefault::SpeedTrack::get_speed() const
+{
+	uint64_t tick = OS::get_singleton()->get_ticks_usec();
+	uint32_t tdiff = tick - last_tick;
+	float delta_t = tdiff / 1000000.0; // not sure how ticks translate to time but uh...
+
+	if(delta_t > min_ref_frame * 2.0f)
+	{
+		return Point2(0.0f, 0.0f);
+	}
+	else
+	{
+		return speed;
+	}
+}
+
 void InputDefault::SpeedTrack::reset() {
 	last_tick = OS::get_singleton()->get_ticks_usec();
 	speed = Vector2();
@@ -67,7 +84,7 @@ void InputDefault::SpeedTrack::reset() {
 
 InputDefault::SpeedTrack::SpeedTrack() {
 
-	min_ref_frame = 0.1;
+	min_ref_frame = 0.0333;
 	max_ref_frame = 0.3;
 	reset();
 }
@@ -422,9 +439,9 @@ Point2 InputDefault::get_mouse_position() const {
 
 	return mouse_pos;
 }
-Point2 InputDefault::get_last_mouse_speed() const {
 
-	return mouse_speed_track.speed;
+Point2 InputDefault::get_last_mouse_speed() const {
+	return mouse_speed_track.get_speed();
 }
 
 int InputDefault::get_mouse_button_mask() const {

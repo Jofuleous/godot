@@ -160,10 +160,13 @@ private:
 	Transform _get_camera_transform() const;
 	int get_selected_count() const;
 
+// jfutch - "hack" for debugging
+public:
 	Vector3 _get_camera_position() const;
 	Vector3 _get_camera_normal() const;
 	Vector3 _get_screen_to_space(const Vector3 &p_vector3);
 
+private:
 	void _select_region();
 	bool _gizmo_select(const Vector2 &p_screenpos, bool p_highlight_only = false);
 

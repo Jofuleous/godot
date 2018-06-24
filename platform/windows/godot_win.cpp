@@ -32,6 +32,8 @@
 #include "os_windows.h"
 #include <locale.h>
 #include <stdio.h>
+#include <chrono>
+#include <thread>
 
 PCHAR *
 CommandLineToArgvA(
@@ -144,6 +146,8 @@ int widechar_main(int argc, wchar_t **argv) {
 		delete[] argv_utf8;
 		return 255;
 	}
+
+	std::this_thread::sleep_for( std::chrono::milliseconds( 8000 ) );
 
 	if (Main::start())
 		os.run();

@@ -32,6 +32,7 @@
 #define MUTEX_WINDOWS_H
 
 #ifdef WINDOWS_ENABLED
+#define WINDOWS_USE_MUTEX
 
 #include "os/mutex.h"
 #include <windows.h>
